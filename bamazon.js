@@ -1,6 +1,6 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
-
+var Table = require('cli-table');
 
 var connection = mysql.createConnection({
   host: "localhost",
@@ -16,55 +16,48 @@ var connection = mysql.createConnection({
 
 connection.connect(function(err) {
   if (err) throw err;
-  console.log("connected as id " + connection.threadId);
-  afterConnection();
-  start();
-
   });
+ start();
 
-var Table = require('cli-table');
- 
-var table = new Table({
+
+function displayStore() {
+
+connection.query("SELECT * FROM bamazon", function(err, res) {
+    if (err) throw err;
+
+
+  table = new Table({
     head: ['ID', 'Product', 'Department', 'Price', 'Quantity']
   , colWidths: [30, 30, 30, 30, 30]
-});
+  });
  
-table.push(
-    ['First value', 'Second value', 'Third Value', 'Fourth Value', 'Fifth Value']
-);
- 
+ for (var i = 0; i < res.length; i++) {
+
+  table.push(
+    [res[i].id, res[i].product, res[i].department, res[i].price, res[i].quantity]
+    );
+  }
+
 console.log(table.toString());
+  });
 
-
+}
 
 function start() {
   inquirer
     .prompt({
       name: "buy",
       type: "input",
-      message: "Welcome to Bamazon!!! What would you like to buy today?",
-      choices: []
+      message: "Welcome to Bamazon!!! Do you want to shop with us today?",
+      choices: ["yes", "no"]
     })
     .then(function(answer) {
       // based on their answer, either call the bid or the post functions
-      if (answer.buy.toUpperCase() === "id") {
-        postAuction();
+      if (answer.buy.toLowerCase() === "yes") {
+        displayStore();
       }
       else {
-        bidAuction();
+        console.log("Come back soon!!!")
       }
     });
 }
-
-
-
-
-
-function afterConnection() {
-  connection.query("SELECT * FROM bamazon", function(err, res) {
-    if (err) throw err;
-    console.log(res);
-    connection.end();
-  });
-}
-
