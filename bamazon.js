@@ -110,8 +110,9 @@ function buy() {
 
                 if (chosenItem.quantity >= parseInt(answer.quantity)) {
 
-
                     var updateStock = chosenItem.quantity - parseInt(answer.quantity)
+                    var total = chosenItem.price * parseInt(answer.quantity)
+
                     console.log(updateStock);
 
                     connection.query("UPDATE bamazon SET? WHERE?", [
@@ -120,6 +121,7 @@ function buy() {
 
                                 quantity: updateStock
                             },
+
 
                             {
 
@@ -130,7 +132,7 @@ function buy() {
                         function(error) {
 
                             if (error) throw err;
-                            console.log("sold")
+                            console.log("Sold!!! Your total is: " + total)
                             displayStore();
                         }
                     );
