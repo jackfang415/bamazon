@@ -55,7 +55,7 @@ function start() {
             choices: ["yes", "no"]
         })
         .then(function(answer) {
-          
+
             if (answer.buy.toLowerCase() === "yes") {
                 displayStore();
             } else {
@@ -95,6 +95,8 @@ function buy() {
                     message: "How many would you like to buy?"
                 }
 
+//Updates the database with the new number after the items have been purchased.
+
             ]).then(function(answer) {
 
                 var itemQuantity = answer.quantity;
@@ -109,40 +111,34 @@ function buy() {
                 if (chosenItem.quantity >= parseInt(answer.quantity)) {
 
 
-                var updateStock = chosenItem.quantity - parseInt(answer.quantity)
-                console.log(updateStock);
+                    var updateStock = chosenItem.quantity - parseInt(answer.quantity)
+                    console.log(updateStock);
 
-                connection.query("UPDATE bamazon SET? WHERE?", [
+                    connection.query("UPDATE bamazon SET? WHERE?", [
 
-                      {
+                            {
 
-                        quantity: updateStock
+                                quantity: updateStock
+                            },
 
-                      },
+                            {
 
-                      {
+                                id: chosenItem.id
+                            }
+                        ],
 
-                        id: chosenItem.id
+                        function(error) {
 
-                      }
-                  ],
-
-                  function(error) {
-
-                    if(error) throw err;
-                    console.log("sold")
+                            if (error) throw err;
+                            console.log("sold")
+                            displayStore();
+                        }
+                    );
+                } else {
+                    console.log("Not Enough Stock!!!")
                     displayStore();
-
-                  }
-
-                  );
                 }
-
-                else {
-                  console.log("Out Of Stock!!!")
-                }
-              }) 
-
+            })
     });
 
 }
