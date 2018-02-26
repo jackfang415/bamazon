@@ -39,9 +39,8 @@ function displayStore() {
             );
         }
 
-        buy();
-
         console.log(table.toString());
+        buy();
     });
 }
 
@@ -56,7 +55,7 @@ function start() {
             choices: ["yes", "no"]
         })
         .then(function(answer) {
-            // based on their answer, either call the bid or the post functions
+          
             if (answer.buy.toLowerCase() === "yes") {
                 displayStore();
             } else {
@@ -70,48 +69,80 @@ function start() {
 
 function buy() {
 
-  connection.query("SELECT * FROM bamazon", function(err, res) {
+    connection.query("SELECT * FROM bamazon", function(err, res) {
         if (err) throw err;
 
-    inquirer
-        .prompt([{
+        inquirer
+            .prompt([{
 
-          name: "choice",
-          type: "rawlist",
-          choices: function() {
-            var choiceArray = [];
-            for (var i = 0; i < res.length; i++) {
-              choiceArray.push(res[i].product);
-            }
-            return choiceArray;
-          },
+                    name: "choice",
+                    type: "rawlist",
+                    choices: function() {
+                        var choiceArray = [];
+                        for (var i = 0; i < res.length; i++) {
+                            choiceArray.push(res[i].product);
+                        }
+                        return choiceArray;
+                    },
 
-          message: "What would you like to buy? (Please Enter An ID Number of The Product)"
-        },
+                    message: "What would you like to buy? (Please Enter An ID Number of The Product)"
+                },
 
-        {
+                {
 
-          name: "quantity",
-          type: "input",
-          message: "How many would you like to buy?"
+                    name: "quantity",
+                    type: "input",
+                    message: "How many would you like to buy?"
+                }
 
-        }]).then(function(answer){
+            ]).then(function(answer) {
 
-          var itemQuantity = answer.quantity;
-          var chosenItem;
-        for (var i = 0; i < res.length; i++) {
-          if (res[i].product === answer.choice) {
-            chosenItem = res[i];
-          }
+                var itemQuantity = answer.quantity;
+                var chosenItem;
+                for (var i = 0; i < res.length; i++) {
+                    if (res[i].product === answer.choice) {
+                        chosenItem = res[i];
+                    }
 
-          
+                }
 
-        }
+                if (chosenItem.quantity >= parseInt(answer.quantity)) {
 
-        console.log(chosenItem);
 
-        })
-});
+                var updateStock = chosenItem.quantity - parseInt(answer.quantity)
+                console.log(updateStock);
+
+                connection.query("UPDATE bamazon SET? WHERE?", [
+
+                      {
+
+                        quantity: updateStock
+
+                      },
+
+                      {
+
+                        id: chosenItem.id
+
+                      }
+                  ],
+
+                  function(error) {
+
+                    if(error) throw err;
+                    console.log("sold")
+                    displayStore();
+
+                  }
+
+                  );
+                }
+
+                else {
+                  console.log("Out Of Stock!!!")
+                }
+              }) 
+
+    });
 
 }
-
