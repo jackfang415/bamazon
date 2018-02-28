@@ -17,15 +17,15 @@ The bamazon app allows the user to enter the store and choose one of the 10 item
 
 2. Once the user enters yes, the user will see the table with the all the items available for purchase.
 
-<img src = "./assets/images/welcome.png">
+<img src = "/assets/images/welcome.png">
 
 3. The user will choose the item they want to purchase and the quantity. The total will be revealed afte the purchase has been made.
 
-<img src = "./assets/images/total.png">
+<img src = "/assets/images/total.png">
 
 4. Once the The user will be notified if the item is out of stock.
 
-<img src = "./assets/images/outofstock.png">
+<img src = "/assets/images/outofstock.png">
 
 ## Built With
 
